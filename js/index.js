@@ -24,12 +24,76 @@ let carX = myCanvas.width / 2 - carWidth / 2;
 let carY = myCanvas.height - carHeight;
 const carSpeed = 5;
 
+let obsWidth = Math.floor(Math.random() * 400);
+let obsHeight = 20;
+let obsX = Math.floor(Math.random() * myCanvas.width);
+let obsY = 0;
+
+const obsArr = [
+  {
+    obsWidth: Math.floor(Math.random() * 400),
+    obsHeight: 20,
+    obsX: Math.floor(Math.random() * myCanvas.width),
+    obsY: 0,
+  },
+  {
+    obsWidth: Math.floor(Math.random() * 400),
+    obsHeight: 20,
+    obsX: Math.floor(Math.random() * myCanvas.width),
+    obsY: 0,
+  },
+  {
+    obsWidth: Math.floor(Math.random() * 400),
+    obsHeight: 20,
+    obsX: Math.floor(Math.random() * myCanvas.width),
+    obsY: 0,
+  },
+  {
+    obsWidth: Math.floor(Math.random() * 400),
+    obsHeight: 20,
+    obsX: Math.floor(Math.random() * myCanvas.width),
+    obsY: 0,
+  },
+  {
+    obsWidth: Math.floor(Math.random() * 400),
+    obsHeight: 20,
+    obsX: Math.floor(Math.random() * myCanvas.width),
+    obsY: 0,
+  },
+];
+
+console.log(obsArr);
+
+// let count = 0;
+
 function animate() {
   ctx.drawImage(bgImg1, 0, bg1Y, myCanvas.width, myCanvas.height);
   ctx.drawImage(bgImg2, 0, bg2Y, myCanvas.width, myCanvas.height);
   ctx.drawImage(carImg, carX, carY, carWidth, carHeight);
+
+  const drawObstacle = () => {
+    ctx.beginPath();
+    ctx.fillStyle = "yellow";
+    ctx.rect(obsX, obsY, obsWidth, obsHeight);
+    ctx.fill();
+    ctx.closePath();
+  };
+
+  if (obsY > myCanvas.height) {
+    obsWidth = Math.floor(Math.random() * 400);
+    obsHeight = 20;
+    obsX = Math.floor(Math.random() * myCanvas.width);
+    obsY = 0;
+    drawObstacle();
+  }
+  // obsArr.forEach((obs) => {
+  //   drawObstacle(obs.obsX, obs.obsY, obs.obsWidth, obs.obsHeight);
+  // });
+  drawObstacle();
+
   bg1Y += 2;
   bg2Y += 2;
+  obsY += 2;
 
   if (bg1Y > myCanvas.height) {
     bg1Y = -myCanvas.height;
