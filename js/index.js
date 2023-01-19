@@ -15,40 +15,62 @@ carImg.src = "../images/car.png";
 
 let gameOver = false;
 let animateId;
+let isMovingLeft = false;
+let isMovingRight = false;
+
+const carWidth = 100;
+const carHeight = 200;
+let carX = myCanvas.width / 2 - carWidth / 2;
+let carY = myCanvas.height - carHeight;
+const carSpeed = 5;
+
+function animate() {
+  ctx.drawImage(bgImg1, 0, bg1Y, myCanvas.width, myCanvas.height);
+  ctx.drawImage(bgImg2, 0, bg2Y, myCanvas.width, myCanvas.height);
+  ctx.drawImage(carImg, carX, carY, carWidth, carHeight);
+  bg1Y += 2;
+  bg2Y += 2;
+
+  if (bg1Y > myCanvas.height) {
+    bg1Y = -myCanvas.height;
+  }
+  if (bg2Y > myCanvas.height) {
+    bg2Y = -myCanvas.height;
+  }
+
+  if (isMovingLeft && carX > 0) {
+    carX -= carSpeed;
+  }
+  if (isMovingRight && carX + carWidth < myCanvas.width) {
+    carX += carSpeed;
+  }
+
+  if (!gameOver) {
+    animateId = requestAnimationFrame(animate);
+  } else {
+    cancelAnimationFrame(animateId);
+  }
+}
+
+function startGame() {
+  animate();
+}
 
 window.onload = () => {
   document.getElementById("start-button").onclick = () => {
     startGame();
   };
 
-  function animate() {
-    ctx.drawImage(bgImg1, 0, bg1Y, myCanvas.width, myCanvas.height);
-    ctx.drawImage(bgImg2, 0, bg2Y, myCanvas.width, myCanvas.height);
-    ctx.drawImage(
-      carImg,
-      myCanvas.width / 2 - 50,
-      myCanvas.height - 200,
-      100,
-      200
-    );
-    bg1Y += 2;
-    bg2Y += 2;
-
-    if (bg1Y > myCanvas.height) {
-      bg1Y = -myCanvas.height;
+  document.addEventListener("keypress", (event) => {
+    if (event.key === "a") {
+      isMovingLeft = true;
     }
-    if (bg2Y > myCanvas.height) {
-      bg2Y = -myCanvas.height;
+    if (event.key === "d") {
+      isMovingRight = true;
     }
-
-    if (!gameOver) {
-      animateId = requestAnimationFrame(animate);
-    } else {
-      cancelAnimationFrame(animateId);
-    }
-  }
-
-  function startGame() {
-    animate();
-  }
+  });
+  document.addEventListener("keyup", () => {
+    isMovingLeft = false;
+    isMovingRight = false;
+  });
 };
