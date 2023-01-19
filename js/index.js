@@ -1,12 +1,11 @@
 const myCanvas = document.querySelector("canvas");
 const ctx = myCanvas.getContext("2d");
+canvas.style.border = "1px solid black";
 
 const bgImg1 = new Image();
-bgImg1.src =
-  "https://media.discordapp.net/attachments/1062053353837830236/1065601329701072946/road.png";
+bgImg1.src = "../images/road.png";
 const bgImg2 = new Image();
-bgImg2.src =
-  "https://media.discordapp.net/attachments/1062053353837830236/1065601329701072946/road.png";
+bgImg2.src = "../images/road.png";
 let bg1Y = 0;
 let bg2Y = -myCanvas.height;
 
@@ -24,41 +23,43 @@ let carX = myCanvas.width / 2 - carWidth / 2;
 let carY = myCanvas.height - carHeight;
 const carSpeed = 5;
 
-let obsWidth = Math.floor(Math.random() * 400);
-let obsHeight = 20;
-let obsX = Math.floor(Math.random() * myCanvas.width);
+let obsWidth = 0;
+let obsHeight = 0;
+let obsX = 0;
 let obsY = 0;
+
+let score = 0;
 
 const obsArr = [
   {
-    obsWidth: Math.floor(Math.random() * 400),
+    obsWidth: Math.floor(Math.random() * 150 + 70),
     obsHeight: 20,
-    obsX: Math.floor(Math.random() * myCanvas.width),
+    obsX: Math.floor(Math.random() * (myCanvas.width - 100)),
     obsY: 0,
   },
   {
-    obsWidth: Math.floor(Math.random() * 400),
+    obsWidth: Math.floor(Math.random() * 150 + 70),
     obsHeight: 20,
-    obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 400,
+    obsX: Math.floor(Math.random() * (myCanvas.width - 100)),
+    obsY: -300,
   },
   {
-    obsWidth: Math.floor(Math.random() * 400),
+    obsWidth: Math.floor(Math.random() * 150 + 70),
     obsHeight: 20,
-    obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 800,
+    obsX: Math.floor(Math.random() * (myCanvas.width - 100)),
+    obsY: -600,
   },
   {
-    obsWidth: Math.floor(Math.random() * 400),
+    obsWidth: Math.floor(Math.random() * 150 + 70),
     obsHeight: 20,
-    obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 1200,
+    obsX: Math.floor(Math.random() * (myCanvas.width - 100)),
+    obsY: -1200,
   },
   {
-    obsWidth: Math.floor(Math.random() * 400),
+    obsWidth: Math.floor(Math.random() * 150 + 70),
     obsHeight: 20,
-    obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 1600,
+    obsX: Math.floor(Math.random() * (myCanvas.width - 100)),
+    obsY: -2400,
   },
 ];
 
@@ -66,6 +67,9 @@ function animate() {
   ctx.drawImage(bgImg1, 0, bg1Y, myCanvas.width, myCanvas.height);
   ctx.drawImage(bgImg2, 0, bg2Y, myCanvas.width, myCanvas.height);
   ctx.drawImage(carImg, carX, carY, carWidth, carHeight);
+
+  ctx.font = "48px serif";
+  ctx.fillText(`Score: ${score}`, 10, 48);
 
   const drawObstacle = () => {
     ctx.beginPath();
@@ -77,20 +81,25 @@ function animate() {
     ctx.closePath();
   };
 
-  if (obsY > myCanvas.height / 5) {
-    obsWidth = Math.floor(Math.random() * 400);
-    obsHeight = 20;
-    obsX = Math.floor(Math.random() * myCanvas.width);
-    obsY = 0;
-    drawObstacle();
-  }
-
   drawObstacle();
 
   bg1Y += 2;
   bg2Y += 2;
+
   obsArr.forEach((obs) => {
     obs.obsY += 2;
+    if (
+      obs.obsX < carX + carWidth &&
+      obs.obsX + obs.obsWidth > carX &&
+      obs.obsY < carY + carHeight &&
+      obs.obsHeight + obs.obsY > carY
+    ) {
+      gameOver = true;
+    }
+
+    if (obs.obsY === myCanvas.height - 200 && !gameOver) {
+      score++;
+    }
     if (obs.obsY > myCanvas.height) {
       obs.obsY = -myCanvas.height;
     }
@@ -106,7 +115,7 @@ function animate() {
   if (isMovingLeft && carX > 0) {
     carX -= carSpeed;
   }
-  if (isMovingRight && carX + carWidth < myCanvas.width) {
+  if (isMovingRight && carX < myCanvas.width) {
     carX += carSpeed;
   }
 
@@ -114,6 +123,9 @@ function animate() {
     animateId = requestAnimationFrame(animate);
   } else {
     cancelAnimationFrame(animateId);
+    ctx.fillStyle = "red";
+    ctx.font = "48px serif";
+    ctx.fillText("GAME OVER", canvas.width / 2 - 150, canvas.height / 2);
   }
 }
 
@@ -129,9 +141,11 @@ window.onload = () => {
   document.addEventListener("keypress", (event) => {
     if (event.key === "a") {
       isMovingLeft = true;
+      carX += carSpeed;
     }
     if (event.key === "d") {
       isMovingRight = true;
+      carX += carSpeed;
     }
   });
   document.addEventListener("keyup", () => {
