@@ -40,31 +40,27 @@ const obsArr = [
     obsWidth: Math.floor(Math.random() * 400),
     obsHeight: 20,
     obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 0,
+    obsY: 400,
   },
   {
     obsWidth: Math.floor(Math.random() * 400),
     obsHeight: 20,
     obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 0,
+    obsY: 800,
   },
   {
     obsWidth: Math.floor(Math.random() * 400),
     obsHeight: 20,
     obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 0,
+    obsY: 1200,
   },
   {
     obsWidth: Math.floor(Math.random() * 400),
     obsHeight: 20,
     obsX: Math.floor(Math.random() * myCanvas.width),
-    obsY: 0,
+    obsY: 1600,
   },
 ];
-
-console.log(obsArr);
-
-// let count = 0;
 
 function animate() {
   ctx.drawImage(bgImg1, 0, bg1Y, myCanvas.width, myCanvas.height);
@@ -74,26 +70,31 @@ function animate() {
   const drawObstacle = () => {
     ctx.beginPath();
     ctx.fillStyle = "yellow";
-    ctx.rect(obsX, obsY, obsWidth, obsHeight);
+    obsArr.forEach((obs) => {
+      ctx.rect(obs.obsX, obs.obsY, obs.obsWidth, obs.obsHeight);
+    });
     ctx.fill();
     ctx.closePath();
   };
 
-  if (obsY > myCanvas.height) {
+  if (obsY > myCanvas.height / 5) {
     obsWidth = Math.floor(Math.random() * 400);
     obsHeight = 20;
     obsX = Math.floor(Math.random() * myCanvas.width);
     obsY = 0;
     drawObstacle();
   }
-  // obsArr.forEach((obs) => {
-  //   drawObstacle(obs.obsX, obs.obsY, obs.obsWidth, obs.obsHeight);
-  // });
+
   drawObstacle();
 
   bg1Y += 2;
   bg2Y += 2;
-  obsY += 2;
+  obsArr.forEach((obs) => {
+    obs.obsY += 2;
+    if (obs.obsY > myCanvas.height) {
+      obs.obsY = -myCanvas.height;
+    }
+  });
 
   if (bg1Y > myCanvas.height) {
     bg1Y = -myCanvas.height;
